@@ -1,0 +1,4115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        KREIP — Kenya Retail Expansion Intelligence Platform
+    </title>
+
+
+    <!-- Tailwind CSS -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- Leaflet CSS -->
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+
+    <!-- Chart.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- Google Fonts -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        body {
+
+            font-family:
+                'Inter',
+                sans-serif;
+
+        }
+
+
+        .leaflet-image-layer {
+
+            image-rendering:
+                pixelated;
+
+            image-rendering:
+                crisp-edges;
+
+        }
+
+
+        .leaflet-tile-pane img {
+
+            image-rendering:
+                auto;
+
+        }
+
+
+        .leaflet-overlay-pane canvas {
+
+            will-change:
+                transform;
+
+        }
+
+
+        .leaflet-left-legend {
+
+            background:
+                white;
+
+            padding:
+                10px 12px;
+
+            border-radius:
+                8px;
+
+            box-shadow:
+                0 1px 5px rgba(0,0,0,0.2);
+
+            font-family:
+                'Inter',
+                sans-serif;
+
+            font-size:
+                11px;
+
+            line-height:
+                1.5;
+
+            color:
+                #334155;
+
+            max-width:
+                220px;
+
+        }
+
+
+        .leaflet-left-legend h4 {
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            text-transform:
+                uppercase;
+
+            color:
+                #0f172a;
+
+            margin-bottom:
+                6px;
+
+            border-bottom:
+                1px solid #e2e8f0;
+
+            padding-bottom:
+                4px;
+
+        }
+
+
+        .legend-item {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            margin-bottom:
+                4px;
+
+        }
+
+
+        .legend-color-box {
+
+            width:
+                14px;
+
+            height:
+                14px;
+
+            border-radius:
+                3px;
+
+            margin-right:
+                8px;
+
+            flex-shrink:
+                0;
+
+            border:
+                1px solid rgba(0,0,0,0.15);
+
+        }
+
+
+        .candidate-item {
+
+            cursor:
+                pointer;
+
+            transition:
+                all 0.15s ease;
+
+        }
+
+
+        .candidate-item:hover {
+
+            background:
+                #eef2ff;
+
+            border-color:
+                #818cf8;
+
+        }
+
+
+        .candidate-item.active {
+
+            background:
+                #eef2ff;
+
+            border-color:
+                #6366f1;
+
+        }
+
+
+        .candidate-score-high {
+
+            background:
+                #d1fae5;
+
+            color:
+                #065f46;
+
+        }
+
+
+        .candidate-score-medium {
+
+            background:
+                #fef3c7;
+
+            color:
+                #92400e;
+
+        }
+
+
+        .candidate-score-low {
+
+            background:
+                #fee2e2;
+
+            color:
+                #991b1b;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body
+    class="bg-gray-100 text-slate-800 min-h-screen flex flex-col"
+>
+
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+
+<header
+    class="bg-slate-900 border-b border-slate-800 px-6 py-3
+           flex items-center justify-between shadow-sm text-white"
+>
+
+    <div class="flex items-center space-x-3">
+
+        <div
+            class="bg-indigo-600 text-white font-bold px-2.5 py-1.5
+                   rounded-lg text-lg tracking-wider"
+        >
+
+            KREIP
+
+        </div>
+
+
+        <div>
+
+            <h1
+                class="text-base font-bold tracking-tight text-white"
+            >
+
+                Kenya Retail Expansion Intelligence Platform
+
+            </h1>
+
+
+            <p
+                class="text-[11px] text-slate-400"
+            >
+
+                Nairobi Metropolitan Market Intelligence &
+                Spatial Decision Support
+
+            </p>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- ============================================================
+     MAIN DASHBOARD
+============================================================ -->
+
+<main
+    class="flex-1 p-4 space-y-4 max-w-[1600px] mx-auto
+           w-full flex flex-col"
+>
+
+
+    <!-- ========================================================
+         KPI CARDS
+    ======================================================== -->
+
+    <section>
+
+        <div
+            class="grid grid-cols-2 sm:grid-cols-3
+                   lg:grid-cols-6 gap-3"
+        >
+
+
+            <!-- Population -->
+
+            <div
+                class="bg-white border border-gray-200 rounded-lg
+                       p-3 shadow-sm hover:border-indigo-500
+                       transition-all"
+            >
+
+                <p class="text-[11px] font-medium text-slate-500">
+
+                    Population Covered
+
+                </p>
+
+
+                <p
+                    id="kpi-population"
+                    class="text-lg font-bold text-slate-900 mt-0.5"
+                >
+
+                    --
+
+                </p>
+
+
+                <span
+                    class="text-[9px] text-emerald-600 font-medium"
+                >
+
+                    Metro Catchment
+
+                </span>
+
+            </div>
+
+
+
+            <!-- Retail -->
+
+            <div
+                class="bg-white border border-gray-200 rounded-lg
+                       p-3 shadow-sm hover:border-indigo-500
+                       transition-all"
+            >
+
+                <p class="text-[11px] font-medium text-slate-500">
+
+                    Retail Outlets
+
+                </p>
+
+
+                <p
+                    id="kpi-retail"
+                    class="text-lg font-bold text-slate-900 mt-0.5"
+                >
+
+                    --
+
+                </p>
+
+
+                <span
+                    class="text-[9px] text-indigo-600 font-medium"
+                >
+
+                    Classified Ecosystem
+
+                </span>
+
+            </div>
+
+
+
+            <!-- Supermarkets -->
+
+            <div
+                class="bg-white border border-gray-200 rounded-lg
+                       p-3 shadow-sm hover:border-indigo-500
+                       transition-all"
+            >
+
+                <p class="text-[11px] font-medium text-slate-500">
+
+                    Supermarkets
+
+                </p>
+
+
+                <p
+                    id="kpi-supermarkets"
+                    class="text-lg font-bold text-slate-900 mt-0.5"
+                >
+
+                    --
+
+                </p>
+
+
+                <span
+                    class="text-[9px] text-blue-600 font-medium"
+                >
+
+                    Chains & Independents
+
+                </span>
+
+            </div>
+
+
+
+            <!-- Transport -->
+
+            <div
+                class="bg-white border border-gray-200 rounded-lg
+                       p-3 shadow-sm hover:border-indigo-500
+                       transition-all"
+            >
+
+                <p class="text-[11px] font-medium text-slate-500">
+
+                    Matatu Stages
+
+                </p>
+
+
+                <p
+                    id="kpi-transport"
+                    class="text-lg font-bold text-slate-900 mt-0.5"
+                >
+
+                    --
+
+                </p>
+
+
+                <span
+                    class="text-[9px] text-amber-600 font-medium"
+                >
+
+                    Matatu Terminals
+
+                </span>
+
+            </div>
+
+
+
+            <!-- Candidates -->
+
+            <div
+                class="bg-white border border-gray-200 rounded-lg
+                       p-3 shadow-sm hover:border-indigo-500
+                       transition-all"
+            >
+
+                <p class="text-[11px] font-medium text-slate-500">
+
+                    Candidate Sites
+
+                </p>
+
+
+                <p
+                    id="kpi-candidates"
+                    class="text-lg font-bold text-slate-900 mt-0.5"
+                >
+
+                    --
+
+                </p>
+
+
+                <span
+                    class="text-[9px] text-purple-600 font-medium"
+                >
+
+                    Processed Opportunities
+
+                </span>
+
+            </div>
+
+
+
+            <!-- Opportunity -->
+
+            <div
+                class="bg-white border border-gray-200 rounded-lg
+                       p-3 shadow-sm hover:border-indigo-500
+                       transition-all"
+            >
+
+                <p class="text-[11px] font-medium text-slate-500">
+
+                    Top Opportunity
+
+                </p>
+
+
+                <p
+                    id="kpi-top-opportunity"
+                    class="text-lg font-bold text-emerald-600 mt-0.5"
+                >
+
+                    --
+
+                </p>
+
+
+                <span
+                    class="text-[9px] text-emerald-700 font-medium"
+                >
+
+                    Max Score
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================================
+         MAIN WORKSPACE
+    ======================================================== -->
+
+    <section
+        class="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-1"
+    >
+
+
+        <!-- ====================================================
+             LEFT CONTROL PANEL
+        ==================================================== -->
+
+        <div
+            class="bg-slate-900 border border-slate-800 rounded-xl
+                   p-4 shadow-sm flex flex-col space-y-4
+                   lg:col-span-1 text-slate-100"
+        >
+
+            <div>
+
+                <h2
+                    class="text-xs font-bold uppercase tracking-wider
+                           text-indigo-400 mb-1"
+                >
+
+                    Expansion Control Panel
+
+                </h2>
+
+
+                <p
+                    class="text-[11px] text-slate-400"
+                >
+
+                    Run real-time what-if store placement simulations.
+
+                </p>
+
+            </div>
+
+
+
+            <!-- Raster Controls -->
+
+            <div
+                class="bg-slate-800 border border-slate-700
+                       rounded-lg p-3 space-y-3"
+            >
+
+                <h3
+                    class="text-xs font-semibold text-slate-200"
+                >
+
+                    Raster Styling Options
+
+                </h3>
+
+
+                <div>
+
+                    <label
+                        class="block text-[10px] font-medium
+                               text-slate-400 mb-1"
+                        for="lulcPaletteSelect"
+                    >
+
+                        LULC Color Theme (7 Classes)
+
+                    </label>
+
+
+                    <select
+                        id="lulcPaletteSelect"
+                        onchange="updateLulcPalette()"
+                        class="w-full bg-slate-900 border
+                               border-slate-700 rounded px-2 py-1
+                               text-xs text-slate-100
+                               focus:outline-none
+                               focus:border-indigo-500"
+                    >
+
+                        <option value="standard">
+
+                            Standard (QGIS Classic)
+
+                        </option>
+
+
+                        <option value="neon">
+
+                            Neon High-Contrast
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Simulation -->
+
+            <div
+                class="bg-slate-800 border border-slate-700
+                       rounded-lg p-3 space-y-3"
+            >
+
+                <h3
+                    class="text-xs font-semibold text-slate-200"
+                >
+
+                    What-If Store Simulation
+
+                </h3>
+
+
+                <div>
+
+                    <label
+                        class="block text-[10px] font-medium
+                               text-slate-400 mb-1"
+                    >
+
+                        Store Floor Area (SQM)
+
+                    </label>
+
+
+                    <input
+                        type="number"
+                        id="sim-size"
+                        value="1500"
+                        class="w-full bg-slate-900 border
+                               border-slate-700 rounded px-2 py-1
+                               text-xs text-slate-100
+                               focus:outline-none
+                               focus:border-indigo-500"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        class="block text-[10px] font-medium
+                               text-slate-400 mb-1"
+                    >
+
+                        Target Coordinates (Lat, Lon)
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="sim-coords"
+                        value="-1.2921, 36.8219"
+                        class="w-full bg-slate-900 border
+                               border-slate-700 rounded px-2 py-1
+                               text-xs text-slate-100
+                               focus:outline-none
+                               focus:border-indigo-500"
+                        placeholder="-1.2921, 36.8219"
+                    >
+
+                </div>
+
+
+                <button
+                    onclick="runSimulation()"
+                    class="w-full bg-indigo-600 hover:bg-indigo-500
+                           text-white font-medium text-xs py-2
+                           rounded shadow-sm transition-colors"
+                >
+
+                    Run Cannibalization & Capture
+
+                </button>
+
+            </div>
+
+
+
+            <!-- Simulation Results -->
+
+            <div
+                id="simulation-results"
+                class="hidden bg-indigo-950/50 border
+                       border-indigo-800/60 rounded-lg p-3
+                       space-y-1 text-xs text-indigo-200"
+            >
+
+                <p
+                    class="font-bold border-b border-indigo-800
+                           pb-1 mb-1"
+                >
+
+                    Simulation Results
+
+                </p>
+
+
+                <p id="sim-res-pop">
+
+                    Catchment Pop: --
+
+                </p>
+
+
+                <p id="sim-res-capture">
+
+                    Market Capture: --
+
+                </p>
+
+
+                <p id="sim-res-risk">
+
+                    Cannibalization Risk: --
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ====================================================
+             RIGHT COLUMN
+        ==================================================== -->
+
+        <div
+            class="lg:col-span-3 flex flex-col space-y-4"
+        >
+
+
+            <!-- =================================================
+                 MAP
+            ================================================= -->
+
+            <div
+                class="bg-white border border-gray-200
+                       rounded-xl p-2 relative shadow-sm"
+            >
+
+                <div
+                    id="map"
+                    style="width:100%;height:460px;"
+                    class="rounded-lg z-10"
+                ></div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ANALYTICS
+            ================================================= -->
+
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+
+
+                <!-- =================================================
+                     FORECAST CHARTS
+                ================================================= -->
+
+                <div
+                    class="bg-white border border-gray-200
+                           rounded-xl p-4 shadow-sm flex flex-col
+                           space-y-4"
+                >
+
+                    <div
+                        class="flex items-center justify-between"
+                    >
+
+                        <h3
+                            class="text-xs font-bold text-slate-800
+                                   uppercase tracking-wider"
+                        >
+
+                            Multi-Metric Growth Forecasts
+
+                        </h3>
+
+
+                        <span
+                            id="chart-site-label"
+                            class="text-[10px] bg-indigo-50
+                                   text-indigo-700 px-2 py-0.5
+                                   rounded font-medium"
+                        >
+
+                            Select a candidate
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- Population -->
+
+                    <div class="space-y-1">
+
+                        <p
+                            class="text-[11px] font-semibold
+                                   text-slate-600"
+                        >
+
+                            Future Population Forecast
+
+                        </p>
+
+
+                        <div class="relative h-28">
+
+                            <canvas
+                                id="chartBuiltup"
+                            ></canvas>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Pressure -->
+
+                    <div class="space-y-1">
+
+                        <p
+                            class="text-[11px] font-semibold
+                                   text-slate-600"
+                        >
+
+                            Retail Demand Pressure Score
+
+                        </p>
+
+
+                        <div class="relative h-28">
+
+                            <canvas
+                                id="chartPressure"
+                            ></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     LOCATION REPORTS
+                ================================================= -->
+
+                <div
+                    class="bg-white border border-gray-200
+                           rounded-xl p-4 shadow-sm flex flex-col"
+                >
+
+                    <h3
+                        class="text-xs font-bold text-indigo-600
+                               uppercase tracking-wider mb-1"
+                    >
+
+                        Location Intelligence & Narrative Reports
+
+                    </h3>
+
+
+                    <p
+                        class="text-[11px] text-slate-500 mb-3"
+                    >
+
+                        Select a processed expansion candidate to
+                        view automated strategy & feasibility reports.
+
+                    </p>
+
+
+                    <div
+                        id="candidates-list"
+                        class="space-y-2 overflow-y-auto
+                               max-h-48 pr-1"
+                    >
+
+                        <div
+                            class="text-[11px] text-slate-400
+                                   text-center py-4"
+                        >
+
+                            Loading expansion candidates...
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 NARRATIVE REPORT
+            ================================================= -->
+
+            <div
+                id="narrative-report-box"
+                class="bg-slate-50 border border-gray-200
+                       rounded-xl p-4 text-xs text-slate-700
+                       overflow-y-auto max-h-48"
+            >
+
+                <p
+                    class="font-bold text-slate-900 mb-1"
+                >
+
+                    Automated Decision Narrative
+
+                </p>
+
+
+                <p
+                    id="report-content"
+                    class="text-[11px] text-slate-600
+                           leading-relaxed"
+                >
+
+                    Select any processed expansion candidate above
+                    to review automated financial feasibility,
+                    Huff capture probability, and competitor
+                    cannibalization risk analyses.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+
+<footer
+    class="bg-white border-t border-gray-200 py-3 text-center
+           text-xs text-slate-500"
+>
+
+    KREIP Platform &copy; 2026 Anga Geosystems —
+    Nairobi Metropolitan Retail Intelligence
+
+</footer>
+
+
+
+<!-- ============================================================
+     LEAFLET
+============================================================ -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+
+
+<script>
+
+/*
+|--------------------------------------------------------------------------
+| GLOBAL VARIABLES
+|--------------------------------------------------------------------------
+*/
+
+const API_BASE =
+    "http://127.0.0.1:8000";
+
+
+let map = null;
+
+let chartBuiltupInstance = null;
+
+let chartPressureInstance = null;
+
+let roadsLayer = null;
+
+let roadsLoaded = false;
+
+let roadsLoading = false;
+
+let candidatesData = [];
+
+let selectedCandidateId = null;
+
+window.lulc2025Layer = null;
+
+
+
+/*
+|--------------------------------------------------------------------------
+| MAP INITIALIZATION
+|--------------------------------------------------------------------------
+*/
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        map =
+            L.map(
+                "map",
+                {
+                    zoomControl: true,
+                    attributionControl: true,
+                    preferCanvas: true
+                }
+            )
+            .setView(
+                [-1.2200, 36.8800],
+                10
+            );
+
+
+        /*
+        |----------------------------------------------------------------------
+        | BASEMAP
+        |----------------------------------------------------------------------
+        */
+
+        L.tileLayer(
+            "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+            {
+                maxZoom: 19,
+                subdomains: "abcd",
+                attribution:
+                    "&copy; OpenStreetMap contributors &copy; CARTO"
+            }
+        ).addTo(map);
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | POPULATION RASTER
+        |----------------------------------------------------------------------
+        */
+
+        const pop2020Layer =
+            L.imageOverlay(
+                `${API_BASE}/api/raster/population-visual`,
+                [
+                    [-1.550043, 36.563229],
+                    [-0.993177, 37.208039]
+                ],
+                {
+                    opacity: 0.75
+                }
+            );
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | LULC RASTER
+        |----------------------------------------------------------------------
+        */
+
+        window.lulc2025Layer =
+            L.imageOverlay(
+                `${API_BASE}/api/raster/lulc-visual?palette=standard`,
+                [
+                    [-1.550043, 36.563229],
+                    [-0.993177, 37.208039]
+                ],
+                {
+                    opacity: 0.85
+                }
+            );
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | VECTOR LAYERS
+        |----------------------------------------------------------------------
+        */
+
+        const adminBoundariesLayer =
+            L.layerGroup();
+
+        const supermarketsLayer =
+            L.layerGroup();
+
+        const retailLayer =
+            L.layerGroup();
+
+        const matatuStagesLayer =
+            L.layerGroup();
+
+        roadsLayer =
+            L.layerGroup();
+
+        const expansionSitesLayer =
+            L.layerGroup();
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | GENERIC POINT LOADER
+        |----------------------------------------------------------------------
+        */
+
+        async function loadPointLayerFromAPI(
+            endpoint,
+            targetLayer,
+            styleOptions,
+            popupTitle
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}${endpoint}`
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `${endpoint} returned HTTP ${response.status}`
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !data ||
+                    data.type !== "FeatureCollection" ||
+                    !Array.isArray(data.features)
+                ) {
+
+                    throw new Error(
+                        `Invalid GeoJSON returned from ${endpoint}`
+                    );
+
+                }
+
+
+                const geojsonLayer =
+                    L.geoJSON(
+                        data,
+                        {
+
+                            pointToLayer:
+                                function (
+                                    feature,
+                                    latlng
+                                ) {
+
+                                    return L.circleMarker(
+                                        latlng,
+                                        styleOptions
+                                    );
+
+                                },
+
+
+                            onEachFeature:
+                                function (
+                                    feature,
+                                    layer
+                                ) {
+
+                                    const properties =
+                                        feature.properties ||
+                                        {};
+
+
+                                    let popupHTML = `
+                                        <div style="
+                                            font-family:Inter,sans-serif;
+                                            font-size:12px;
+                                            line-height:1.5;
+                                        ">
+                                            <strong>
+                                                ${popupTitle}
+                                            </strong>
+                                    `;
+
+
+                                    Object.entries(
+                                        properties
+                                    )
+                                    .forEach(
+                                        function (
+                                            [key, value]
+                                        ) {
+
+                                            if (
+                                                value !== null &&
+                                                value !== undefined &&
+                                                value !== ""
+                                            ) {
+
+                                                popupHTML += `
+                                                    <br>
+                                                    <strong>
+                                                        ${key}:
+                                                    </strong>
+                                                    ${value}
+                                                `;
+
+                                            }
+
+                                        }
+                                    );
+
+
+                                    popupHTML +=
+                                        "</div>";
+
+
+                                    layer.bindPopup(
+                                        popupHTML
+                                    );
+
+                                }
+
+                        }
+                    );
+
+
+                targetLayer.clearLayers();
+
+                targetLayer.addLayer(
+                    geojsonLayer
+                );
+
+
+                console.log(
+                    `✅ ${popupTitle} loaded: ${
+                        data.features.length.toLocaleString()
+                    } features`
+                );
+
+
+                return data.features.length;
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    `❌ Failed to load ${popupTitle}:`,
+                    error
+                );
+
+
+                targetLayer.clearLayers();
+
+                return 0;
+
+            }
+
+        }
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | LOAD MARKET DATA
+        |----------------------------------------------------------------------
+        */
+
+        async function loadRealMarketData() {
+
+            await loadPointLayerFromAPI(
+                "/api/retail/supermarkets",
+                supermarketsLayer,
+                {
+                    radius: 6,
+                    fillColor: "#0e0aec",
+                    color: "#ffffff",
+                    weight: 1.5,
+                    fillOpacity: 0.9
+                },
+                "Supermarket"
+            );
+
+
+            await loadPointLayerFromAPI(
+                "/api/retail/shops",
+                retailLayer,
+                {
+                    radius: 4,
+                    fillColor: "#0dd7e6",
+                    color: "#ffffff",
+                    weight: 1,
+                    fillOpacity: 0.75
+                },
+                "Retail Shop"
+            );
+
+
+            await loadPointLayerFromAPI(
+                "/api/transport",
+                matatuStagesLayer,
+                {
+                    radius: 5,
+                    fillColor: "#f59e0b",
+                    color: "#ffffff",
+                    weight: 1.5,
+                    fillOpacity: 0.85
+                },
+                "Matatu Stage"
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CANDIDATES
+            |--------------------------------------------------------------------------
+            */
+
+            await loadPointLayerFromAPI(
+                "/api/candidates",
+                expansionSitesLayer,
+                {
+                    radius: 7,
+                    fillColor: "#0edf42",
+                    color: "#ffffff",
+                    weight: 2,
+                    fillOpacity: 0.9
+                },
+                "Expansion Candidate Site"
+            );
+
+        }
+
+
+
+        loadRealMarketData();
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | LOAD CANDIDATE REPORT LIST
+        |----------------------------------------------------------------------
+        */
+
+        loadCandidatesFromAPI();
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | LAYER CONTROL
+        |----------------------------------------------------------------------
+        */
+
+        const overlayMaps = {
+
+            "Admin Boundaries (Counties)":
+                adminBoundariesLayer,
+
+            "Population 2020 (Raster)":
+                pop2020Layer,
+
+            "LULC 2025 (Clipped Raster)":
+                window.lulc2025Layer,
+
+            "Road Network":
+                roadsLayer,
+
+            "Supermarkets":
+                supermarketsLayer,
+
+            "Retail Shops":
+                retailLayer,
+
+            "Matatu Stages":
+                matatuStagesLayer,
+
+            "Expansion Sites":
+                expansionSitesLayer
+
+        };
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | DEFAULT LAYERS
+        |----------------------------------------------------------------------
+        */
+
+        pop2020Layer.addTo(map);
+
+        window.lulc2025Layer.addTo(map);
+
+        adminBoundariesLayer.addTo(map);
+
+        supermarketsLayer.addTo(map);
+
+        retailLayer.addTo(map);
+
+        matatuStagesLayer.addTo(map);
+
+        expansionSitesLayer.addTo(map);
+
+
+
+        /*
+        |----------------------------------------------------------------------
+        | LEGEND
+        |----------------------------------------------------------------------
+        */
+
+        const layerLegendData = {
+
+            "Admin Boundaries (Counties)": {
+                name: "Admin Boundaries",
+                color: "#08080f",
+                type: "simple"
+            },
+
+
+            "Population 2020 (Raster)": {
+                name: "Population 2020",
+                type: "nested",
+
+                subItems: [
+                    { name: "0 - 242", color: "#19065e" },
+                    { name: "242 - 484", color: "#1f58e6" },
+                    { name: "484 - 725", color: "#1bc7e5" },
+                    { name: "725 - 967", color: "#15df1f" },
+                    { name: "967 - 1209", color: "#c3ef2c" },
+                    { name: "1209 - 1451", color: "#d2e711" },
+                    { name: "1451 - 1693", color: "#f2cb1b" },
+                    { name: "1693 - 1934", color: "#e0740f" },
+                    { name: "1934 - 2176", color: "#df120b" },
+                    { name: "> 2176", color: "#490f07" }
+                ]
+
+            },
+
+
+            "LULC 2025 (Clipped Raster)": {
+
+                name:
+                    "LULC 2025 (7 Classes)",
+
+                type:
+                    "nested",
+
+                subItems: [
+                    {
+                        name: "Water Bodies",
+                        color: "#193cd4"
+                    },
+                    {
+                        name: "Trees / Forest",
+                        color: "#1D662E"
+                    },
+                    {
+                        name: "Rangeland / Grass",
+                        color: "#97b470"
+                    },
+                    {
+                        name: "Crops / Agriculture",
+                        color: "#eeea0d"
+                    },
+                    {
+                        name: "Built-up (Urban)",
+                        color: "#ee1c0d"
+                    },
+                    {
+                        name: "Bushy Vegetation",
+                        color: "#dba510"
+                    },
+                    {
+                        name: "Bare Ground",
+                        color: "#b39fe1"
+                    }
+                ]
+
+            },
+
+
+            "Road Network": {
+                name: "Road Network",
+                color: "#680909",
+                type: "simple"
+            },
+
+
+            "Supermarkets": {
+                name: "Supermarkets",
+                color: "#0e0aec",
+                type: "simple"
+            },
+
+
+            "Retail Shops": {
+                name: "Retail Shops",
+                color: "#0dd7e6",
+                type: "simple"
+            },
+
+
+            "Matatu Stages": {
+                name: "Matatu Stages",
+                color: "#f59e0b",
+                type: "simple"
+            },
+
+
+            "Expansion Sites": {
+                name: "Expansion Sites",
+                color: "#0edf42",
+                type: "simple"
+            }
+
+        };
+
+
+
+        let activeLegendLayers =
+            new Set([
+                "Admin Boundaries (Counties)",
+                "Population 2020 (Raster)",
+                "LULC 2025 (Clipped Raster)",
+                "Supermarkets",
+                "Retail Shops",
+                "Matatu Stages",
+                "Expansion Sites"
+            ]);
+
+
+
+        const LeftLegendControl =
+            L.Control.extend({
+
+                options: {
+                    position: "bottomleft"
+                },
+
+
+                onAdd:
+                    function () {
+
+                        this._div =
+                            L.DomUtil.create(
+                                "div",
+                                "leaflet-left-legend"
+                            );
+
+
+                        this.update();
+
+
+                        return this._div;
+
+                    },
+
+
+                update:
+                    function () {
+
+                        let html =
+                            "<h4>Active Layers Legend</h4>";
+
+                        let count = 0;
+
+
+                        for (
+                            const layerName
+                            of activeLegendLayers
+                        ) {
+
+                            const item =
+                                layerLegendData[
+                                    layerName
+                                ];
+
+
+                            if (!item) {
+
+                                continue;
+
+                            }
+
+
+                            if (
+                                item.type === "simple"
+                            ) {
+
+                                html += `
+                                    <div class="legend-item">
+
+                                        <span
+                                            class="legend-color-box"
+                                            style="
+                                                background-color:
+                                                ${item.color};
+                                            "
+                                        ></span>
+
+                                        <span>
+                                            ${item.name}
+                                        </span>
+
+                                    </div>
+                                `;
+
+                            }
+
+
+                            else {
+
+                                html += `
+                                    <div
+                                        style="
+                                            margin-bottom:6px;
+                                        "
+                                    >
+
+                                        <div
+                                            style="
+                                                font-weight:600;
+                                                color:#0f172a;
+                                                margin-bottom:2px;
+                                            "
+                                        >
+
+                                            ${item.name}
+
+                                        </div>
+
+                                        <div
+                                            style="
+                                                padding-left:12px;
+                                                border-left:
+                                                    2px solid #e2e8f0;
+                                                margin-left:4px;
+                                            "
+                                        >
+                                `;
+
+
+                                item.subItems.forEach(
+                                    function (sub) {
+
+                                        html += `
+                                            <div
+                                                class="legend-item"
+                                                style="
+                                                    margin-bottom:2px;
+                                                "
+                                            >
+
+                                                <span
+                                                    class="legend-color-box"
+                                                    style="
+                                                        width:10px;
+                                                        height:10px;
+                                                        background-color:
+                                                        ${sub.color};
+                                                    "
+                                                ></span>
+
+                                                <span
+                                                    style="
+                                                        font-size:10px;
+                                                        color:#475569;
+                                                    "
+                                                >
+
+                                                    ${sub.name}
+
+                                                </span>
+
+                                            </div>
+                                        `;
+
+                                    }
+                                );
+
+
+                                html += `
+                                        </div>
+                                    </div>
+                                `;
+
+                            }
+
+
+                            count++;
+
+                        }
+
+
+                        if (count === 0) {
+
+                            this._div.innerHTML =
+                                "<h4>Active Layers Legend</h4>" +
+                                "<p style=" +
+                                "'color:#94a3b8;" +
+                                "font-style:italic;" +
+                                "margin:0;'>" +
+                                "No layers active" +
+                                "</p>";
+
+                        }
+
+
+                        else {
+
+                            this._div.innerHTML =
+                                html;
+
+                        }
+
+                    }
+
+            });
+
+
+
+        const leftLegend =
+            new LeftLegendControl();
+
+
+        leftLegend.addTo(map);
+
+
+
+        const layerControl =
+            L.control.layers(
+                null,
+                overlayMaps,
+                {
+                    position: "topright",
+                    collapsed: true
+                }
+            )
+            .addTo(map);
+
+
+
+        map.on(
+            "overlayadd",
+            function (event) {
+
+                for (
+                    const [key, layer]
+                    of Object.entries(
+                        overlayMaps
+                    )
+                ) {
+
+                    if (
+                        layer === event.layer
+                    ) {
+
+                        activeLegendLayers.add(
+                            key
+                        );
+
+                        leftLegend.update();
+
+                        break;
+
+                    }
+
+                }
+
+            }
+        );
+
+
+
+        map.on(
+            "overlayremove",
+            function (event) {
+
+                for (
+                    const [key, layer]
+                    of Object.entries(
+                        overlayMaps
+                    )
+                ) {
+
+                    if (
+                        layer === event.layer
+                    ) {
+
+                        activeLegendLayers.delete(
+                            key
+                        );
+
+                        leftLegend.update();
+
+                        break;
+
+                    }
+
+                }
+
+            }
+        );
+
+
+
+        map.on(
+            "overlayadd",
+            function (event) {
+
+                if (
+                    event.layer === roadsLayer
+                ) {
+
+                    loadRoadsFromAPI();
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+
+/*
+|--------------------------------------------------------------------------
+| LOAD CANDIDATES FROM PROCESSED BACKEND DATA
+|--------------------------------------------------------------------------
+|
+| THIS REPLACES THE OLD HARD-CODED:
+|
+| SITE_1
+| SITE_2
+| SITE_3
+|
+|--------------------------------------------------------------------------
+*/
+
+async function loadCandidatesFromAPI() {
+
+    const container =
+        document.getElementById(
+            "candidates-list"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+        <div
+            class="text-[11px] text-slate-400
+                   text-center py-4"
+        >
+            Loading expansion candidates...
+        </div>
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/candidates`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Candidates API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data ||
+            data.type !== "FeatureCollection" ||
+            !Array.isArray(data.features)
+        ) {
+
+            throw new Error(
+                "Invalid candidate GeoJSON returned by API."
+            );
+
+        }
+
+
+        candidatesData =
+            data.features;
+
+
+        if (
+            candidatesData.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div
+                    class="text-[11px] text-slate-400
+                           text-center py-4"
+                >
+                    No processed expansion candidates found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SORT BY OPPORTUNITY SCORE
+        |--------------------------------------------------------------------------
+        */
+
+        candidatesData.sort(
+            function (a, b) {
+
+                const scoreA =
+                    getCandidateScore(a.properties || {});
+
+                const scoreB =
+                    getCandidateScore(b.properties || {});
+
+                return scoreB - scoreA;
+
+            }
+        );
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUILD CANDIDATE LIST
+        |--------------------------------------------------------------------------
+        */
+
+        container.innerHTML = "";
+
+
+        candidatesData.forEach(
+            function (
+                feature,
+                index
+            ) {
+
+                const properties =
+                    feature.properties ||
+                    {};
+
+
+                const siteId =
+                    getCandidateId(
+                        properties,
+                        index
+                    );
+
+
+                const siteName =
+                    getCandidateName(
+                        properties,
+                        index
+                    );
+
+
+                const score =
+                    getCandidateScore(
+                        properties
+                    );
+
+
+                const scoreClass =
+                    getScoreClass(
+                        score
+                    );
+
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "candidate-item flex items-center " +
+                    "justify-between p-2 rounded-lg " +
+                    "border border-gray-200 bg-gray-50";
+
+
+                item.dataset.siteId =
+                    siteId;
+
+
+                item.innerHTML = `
+
+                    <div class="min-w-0">
+
+                        <p
+                            class="text-xs font-bold
+                                   text-slate-800 truncate"
+                        >
+
+                            ${escapeHTML(siteName)}
+
+                        </p>
+
+
+                        <p
+                            class="text-[10px]
+                                   text-slate-500"
+                        >
+
+                            Processed Expansion Candidate
+
+                        </p>
+
+                    </div>
+
+
+                    <span
+                        class="text-xs font-semibold
+                               px-2 py-0.5 rounded
+                               ${scoreClass}"
+                    >
+
+                        ${formatScore(score)}
+
+                    </span>
+
+                `;
+
+
+                item.addEventListener(
+                    "click",
+                    function () {
+
+                        selectCandidate(
+                            feature,
+                            item
+                        );
+
+                    }
+                );
+
+
+                container.appendChild(
+                    item
+                );
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE KPI DIRECTLY FROM REAL CANDIDATES
+        |--------------------------------------------------------------------------
+        */
+
+        const candidateKPI =
+            document.getElementById(
+                "kpi-candidates"
+            );
+
+
+        if (candidateKPI) {
+
+            candidateKPI.innerText =
+                candidatesData.length.toLocaleString();
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOP OPPORTUNITY
+        |--------------------------------------------------------------------------
+        */
+
+        const topScore =
+            candidatesData.length > 0
+                ? getCandidateScore(
+                    candidatesData[0].properties || {}
+                )
+                : 0;
+
+
+        const topOpportunity =
+            document.getElementById(
+                "kpi-top-opportunity"
+            );
+
+
+        if (topOpportunity) {
+
+            topOpportunity.innerText =
+                formatScore(topScore);
+
+        }
+
+
+        console.log(
+            `✅ Loaded ${
+                candidatesData.length.toLocaleString()
+            } real expansion candidates.`
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Failed to load expansion candidates:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <div
+                class="text-[11px] text-red-500
+                       text-center py-4"
+            >
+
+                Failed to load expansion candidates.
+
+            </div>
+        `;
+
+    }
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| CANDIDATE FIELD HELPERS
+|--------------------------------------------------------------------------
+*/
+
+function getCandidateId(
+    properties,
+    index
+) {
+
+    return String(
+        properties.site_id ??
+        properties.candidate_id ??
+        properties.id ??
+        properties.ID ??
+        properties.Site_ID ??
+        `CANDIDATE_${index + 1}`
+    );
+
+}
+
+
+
+function getCandidateName(
+    properties,
+    index
+) {
+
+    return String(
+        properties.site_name ??
+        properties.candidate_name ??
+        properties.name ??
+        properties.Name ??
+        properties.location_name ??
+        `Expansion Candidate ${index + 1}`
+    );
+
+}
+
+
+
+function getCandidateScore(
+    properties
+) {
+
+    const possibleFields = [
+
+        "future_opportunity",
+
+        "opportunity_score",
+
+        "Opportunity_Score",
+
+        "opportunity",
+
+        "score",
+
+        "Score",
+
+        "future_opportunity_score"
+
+    ];
+
+
+    for (
+        const field
+        of possibleFields
+    ) {
+
+        if (
+            properties[field] !== undefined &&
+            properties[field] !== null
+        ) {
+
+            const value =
+                Number(
+                    properties[field]
+                );
+
+
+            if (
+                Number.isFinite(value)
+            ) {
+
+                return value;
+
+            }
+
+        }
+
+    }
+
+
+    return 0;
+
+}
+
+
+
+function formatScore(
+    score
+) {
+
+    if (
+        !Number.isFinite(
+            Number(score)
+        )
+    ) {
+
+        return "--";
+
+    }
+
+
+    return Number(
+        score
+    ).toFixed(1);
+
+}
+
+
+
+function getScoreClass(
+    score
+) {
+
+    if (
+        score >= 75
+    ) {
+
+        return "candidate-score-high";
+
+    }
+
+
+    if (
+        score >= 50
+    ) {
+
+        return "candidate-score-medium";
+
+    }
+
+
+    return "candidate-score-low";
+
+}
+
+
+
+function escapeHTML(
+    value
+) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| SELECT REAL CANDIDATE
+|--------------------------------------------------------------------------
+*/
+
+function selectCandidate(
+    feature,
+    clickedElement
+) {
+
+    const properties =
+        feature.properties ||
+        {};
+
+
+    const siteId =
+        getCandidateId(
+            properties,
+            0
+        );
+
+
+    const siteName =
+        getCandidateName(
+            properties,
+            0
+        );
+
+
+    const score =
+        getCandidateScore(
+            properties
+        );
+
+
+    selectedCandidateId =
+        siteId;
+
+
+    document
+        .querySelectorAll(
+            ".candidate-item"
+        )
+        .forEach(
+            function (element) {
+
+                element.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    if (clickedElement) {
+
+        clickedElement.classList.add(
+            "active"
+        );
+
+    }
+
+
+    document.getElementById(
+        "chart-site-label"
+    ).innerText =
+        siteName;
+
+
+    document.getElementById(
+        "report-content"
+    ).innerText =
+        `Loading decision intelligence for ${siteName}...`;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ZOOM TO REAL CANDIDATE
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        feature.geometry &&
+        feature.geometry.type === "Point"
+    ) {
+
+        const coordinates =
+            feature.geometry.coordinates;
+
+
+        if (
+            Array.isArray(coordinates) &&
+            coordinates.length >= 2
+        ) {
+
+            const lon =
+                Number(
+                    coordinates[0]
+                );
+
+            const lat =
+                Number(
+                    coordinates[1]
+                );
+
+
+            if (
+                Number.isFinite(lat) &&
+                Number.isFinite(lon)
+            ) {
+
+                map.setView(
+                    [lat, lon],
+                    Math.max(
+                        map.getZoom(),
+                        14
+                    )
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOAD REAL REPORT
+    |--------------------------------------------------------------------------
+    */
+
+    loadSiteReport(
+        siteId,
+        siteName,
+        score
+    );
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| SITE REPORT
+|--------------------------------------------------------------------------
+*/
+
+async function loadSiteReport(
+    siteId,
+    siteName,
+    score
+) {
+
+    document.getElementById(
+        "chart-site-label"
+    ).innerText =
+        siteName;
+
+
+    document.getElementById(
+        "report-content"
+    ).innerText =
+        `Loading decision intelligence for ${siteName}...`;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/report/${encodeURIComponent(siteId)}`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Report API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        document.getElementById(
+            "report-content"
+        ).innerText =
+            data.report ||
+            `No report available for ${siteName}.`;
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Failed to load candidate report:",
+            error
+        );
+
+
+        document.getElementById(
+            "report-content"
+        ).innerText =
+            `Decision report unavailable for ${siteName}.`;
+
+    }
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| LOAD FORECAST DATA
+|--------------------------------------------------------------------------
+*/
+
+async function loadForecastCharts() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/forecast`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Forecast API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data ||
+            data.type !== "FeatureCollection" ||
+            !Array.isArray(data.features)
+        ) {
+
+            throw new Error(
+                "Invalid forecast GeoJSON returned by API."
+            );
+
+        }
+
+
+        if (
+            data.features.length === 0
+        ) {
+
+            throw new Error(
+                "Forecast API returned no features."
+            );
+
+        }
+
+
+        const properties =
+            data.features.map(
+                feature =>
+                    feature.properties || {}
+            );
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MEAN FIELD
+        |--------------------------------------------------------------------------
+        */
+
+        function meanField(
+            fieldName
+        ) {
+
+            const values =
+                properties
+                    .map(
+                        row =>
+                            Number(
+                                row[fieldName]
+                            )
+                    )
+                    .filter(
+                        value =>
+                            Number.isFinite(value)
+                    );
+
+
+            if (
+                values.length === 0
+            ) {
+
+                return null;
+
+            }
+
+
+            return (
+                values.reduce(
+                    (
+                        sum,
+                        value
+                    ) =>
+                        sum + value,
+                    0
+                ) /
+                values.length
+            );
+
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | POPULATION
+        |--------------------------------------------------------------------------
+        */
+
+        const populationForecast = [
+
+            meanField(
+                "future_population_2026"
+            ),
+
+            meanField(
+                "future_population_2027"
+            ),
+
+            meanField(
+                "future_population_2028"
+            ),
+
+            meanField(
+                "future_population_2029"
+            ),
+
+            meanField(
+                "future_population_2030"
+            )
+
+        ];
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETAIL PRESSURE
+        |--------------------------------------------------------------------------
+        */
+
+        const pressureForecast = [
+
+            meanField(
+                "future_retail_pressure_2026"
+            ),
+
+            meanField(
+                "future_retail_pressure_2027"
+            ),
+
+            meanField(
+                "future_retail_pressure_2028"
+            ),
+
+            meanField(
+                "future_retail_pressure_2029"
+            ),
+
+            meanField(
+                "future_retail_pressure_2030"
+            )
+
+        ];
+
+
+
+        if (
+            populationForecast.some(
+                value =>
+                    value === null
+            )
+        ) {
+
+            throw new Error(
+                "Population forecast fields are missing."
+            );
+
+        }
+
+
+        if (
+            pressureForecast.some(
+                value =>
+                    value === null
+            )
+        ) {
+
+            throw new Error(
+                "Retail pressure forecast fields are missing."
+            );
+
+        }
+
+
+        initCharts(
+            populationForecast,
+            pressureForecast
+        );
+
+
+        console.log(
+            "✅ Forecast charts loaded successfully."
+        );
+
+
+        console.log(
+            "Population forecast:",
+            populationForecast
+        );
+
+
+        console.log(
+            "Retail pressure forecast:",
+            pressureForecast
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Failed to load forecast data:",
+            error
+        );
+
+
+        initCharts(
+            [],
+            []
+        );
+
+    }
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| CHARTS
+|--------------------------------------------------------------------------
+*/
+
+function initCharts(
+    populationData,
+    pressureData
+) {
+
+    const chartBuiltup =
+        document.getElementById(
+            "chartBuiltup"
+        );
+
+
+    const chartPressure =
+        document.getElementById(
+            "chartPressure"
+        );
+
+
+    if (
+        !chartBuiltup ||
+        !chartPressure
+    ) {
+
+        console.error(
+            "❌ Chart canvas elements were not found."
+        );
+
+        return;
+
+    }
+
+
+    const ctx1 =
+        chartBuiltup.getContext(
+            "2d"
+        );
+
+
+    const ctx2 =
+        chartPressure.getContext(
+            "2d"
+        );
+
+
+    if (
+        chartBuiltupInstance
+    ) {
+
+        chartBuiltupInstance.destroy();
+
+    }
+
+
+    if (
+        chartPressureInstance
+    ) {
+
+        chartPressureInstance.destroy();
+
+    }
+
+
+    chartBuiltupInstance =
+        null;
+
+    chartPressureInstance =
+        null;
+
+
+    const labels = [
+
+        "2026",
+        "2027",
+        "2028",
+        "2029",
+        "2030"
+
+    ];
+
+
+    if (
+        !Array.isArray(
+            populationData
+        ) ||
+        populationData.length !== 5
+    ) {
+
+        console.error(
+            "❌ Invalid population forecast data.",
+            populationData
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Array.isArray(
+            pressureData
+        ) ||
+        pressureData.length !== 5
+    ) {
+
+        console.error(
+            "❌ Invalid retail pressure forecast data.",
+            pressureData
+        );
+
+        return;
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | POPULATION CHART
+    |--------------------------------------------------------------------------
+    */
+
+    chartBuiltupInstance =
+        new Chart(
+            ctx1,
+            {
+
+                type:
+                    "bar",
+
+
+                data: {
+
+                    labels:
+                        labels,
+
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Population Forecast",
+
+                            data:
+                                populationData,
+
+                            backgroundColor:
+                                "#6366f1",
+
+                            borderRadius:
+                                5,
+
+                            borderSkipped:
+                                false
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false,
+
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        },
+
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (
+                                        context
+                                    ) {
+
+                                        return (
+                                            "Population: " +
+                                            Number(
+                                                context.parsed.y
+                                            ).toLocaleString(
+                                                undefined,
+                                                {
+                                                    maximumFractionDigits: 2
+                                                }
+                                            )
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            grid: {
+                                display: false
+                            },
+
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+
+                        },
+
+
+                        y: {
+
+                            beginAtZero:
+                                true,
+
+                            ticks: {
+
+                                font: {
+                                    size: 9
+                                },
+
+                                callback:
+                                    function (
+                                        value
+                                    ) {
+
+                                        return Number(
+                                            value
+                                        ).toLocaleString();
+
+                                    }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RETAIL PRESSURE CHART
+    |--------------------------------------------------------------------------
+    */
+
+    chartPressureInstance =
+        new Chart(
+            ctx2,
+            {
+
+                type:
+                    "bar",
+
+
+                data: {
+
+                    labels:
+                        labels,
+
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Retail Demand Pressure",
+
+                            data:
+                                pressureData,
+
+                            backgroundColor:
+                                "#10b981",
+
+                            borderRadius:
+                                5,
+
+                            borderSkipped:
+                                false
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false,
+
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        },
+
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (
+                                        context
+                                    ) {
+
+                                        return (
+                                            "Pressure: " +
+                                            Number(
+                                                context.parsed.y
+                                            ).toFixed(2)
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            grid: {
+                                display: false
+                            },
+
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+
+                        },
+
+
+                        y: {
+
+                            beginAtZero:
+                                true,
+
+                            ticks: {
+
+                                font: {
+                                    size: 9
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+
+    console.log(
+        "✅ Forecast charts rendered for 2026–2030."
+    );
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ROAD NETWORK
+|--------------------------------------------------------------------------
+*/
+
+async function loadRoadsFromAPI() {
+
+    if (roadsLoaded) {
+
+        if (
+            !map.hasLayer(
+                roadsLayer
+            )
+        ) {
+
+            roadsLayer.addTo(
+                map
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    if (roadsLoading) {
+
+        return;
+
+    }
+
+
+    roadsLoading =
+        true;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/roads`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Road API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const roadGeoJSON =
+            await response.json();
+
+
+        if (
+            !roadGeoJSON ||
+            roadGeoJSON.type !==
+                "FeatureCollection" ||
+            !Array.isArray(
+                roadGeoJSON.features
+            )
+        ) {
+
+            throw new Error(
+                "Invalid road GeoJSON returned by API."
+            );
+
+        }
+
+
+        roadsLayer.clearLayers();
+
+
+        const realRoads =
+            L.geoJSON(
+                roadGeoJSON,
+                {
+
+                    renderer:
+                        L.canvas({
+                            padding: 0.5
+                        }),
+
+
+                    smoothFactor:
+                        1.2,
+
+
+                    style:
+                        function (
+                            feature
+                        ) {
+
+                            const props =
+                                feature &&
+                                feature.properties
+                                    ? feature.properties
+                                    : {};
+
+
+                            const highway =
+                                Array.isArray(
+                                    props.highway
+                                )
+                                    ? props.highway[0]
+                                    : props.highway;
+
+
+                            if (
+                                highway ===
+                                    "motorway" ||
+                                highway ===
+                                    "motorway_link"
+                            ) {
+
+                                return {
+                                    color: "#da14a8",
+                                    weight: 4,
+                                    opacity: 0.9
+                                };
+
+                            }
+
+
+                            if (
+                                highway ===
+                                    "trunk" ||
+                                highway ===
+                                    "trunk_link"
+                            ) {
+
+                                return {
+                                    color: "#ea0cba",
+                                    weight: 3.6,
+                                    opacity: 0.9
+                                };
+
+                            }
+
+
+                            if (
+                                highway ===
+                                    "primary" ||
+                                highway ===
+                                    "primary_link"
+                            ) {
+
+                                return {
+                                    color: "#b90fe4",
+                                    weight: 3,
+                                    opacity: 0.9
+                                };
+
+                            }
+
+
+                            if (
+                                highway ===
+                                    "secondary" ||
+                                highway ===
+                                    "secondary_link"
+                            ) {
+
+                                return {
+                                    color: "#e0c00e",
+                                    weight: 2.5,
+                                    opacity: 0.85
+                                };
+
+                            }
+
+
+                            if (
+                                highway ===
+                                    "tertiary" ||
+                                highway ===
+                                    "tertiary_link"
+                            ) {
+
+                                return {
+                                    color: "#6d1313",
+                                    weight: 2,
+                                    opacity: 0.8
+                                };
+
+                            }
+
+
+                            if (
+                                highway ===
+                                    "residential"
+                            ) {
+
+                                return {
+                                    color: "#661111",
+                                    weight: 2,
+                                    opacity: 0.65
+                                };
+
+                            }
+
+
+                            return {
+                                color: "#740606",
+                                weight: 2,
+                                opacity: 0.45
+                            };
+
+                        },
+
+
+                    onEachFeature:
+                        function (
+                            feature,
+                            layer
+                        ) {
+
+                            layer.on(
+                                "click",
+                                function (e) {
+
+                                    const props =
+                                        feature.properties ||
+                                        {};
+
+
+                                    const roadName =
+                                        props.name ||
+                                        props.ref ||
+                                        "Unnamed Road";
+
+
+                                    const roadType =
+                                        Array.isArray(
+                                            props.highway
+                                        )
+                                            ? props.highway.join(
+                                                ", "
+                                            )
+                                            : (
+                                                props.highway ||
+                                                "Road"
+                                            );
+
+
+                                    const speed =
+                                        props.speed_kph !==
+                                            undefined
+                                            ? `${props.speed_kph} km/h`
+                                            : "Not available";
+
+
+                                    const length =
+                                        props.length !==
+                                            undefined
+                                            ? `${(
+                                                Number(
+                                                    props.length
+                                                ) / 1000
+                                            ).toFixed(2)} km`
+                                            : "Not available";
+
+
+                                    L.popup({
+                                        maxWidth: 280
+                                    })
+                                    .setLatLng(
+                                        e.latlng
+                                    )
+                                    .setContent(`
+                                        <div style="
+                                            font-family:Inter,sans-serif;
+                                            font-size:12px;
+                                            line-height:1.5;
+                                        ">
+
+                                            <strong>
+                                                ${escapeHTML(roadName)}
+                                            </strong>
+
+                                            <br>
+
+                                            Type:
+                                            ${escapeHTML(roadType)}
+
+                                            <br>
+
+                                            Speed:
+                                            ${speed}
+
+                                            <br>
+
+                                            Length:
+                                            ${length}
+
+                                        </div>
+                                    `)
+                                    .openOn(
+                                        map
+                                    );
+
+                                }
+                            );
+
+                        }
+
+                }
+            );
+
+
+        roadsLayer.addLayer(
+            realRoads
+        );
+
+
+        roadsLoaded =
+            true;
+
+
+        console.log(
+            `✅ Real road network loaded: ${
+                roadGeoJSON.features.length.toLocaleString()
+            } road features`
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Failed to load road network:",
+            error
+        );
+
+
+        roadsLayer.clearLayers();
+
+    }
+
+
+    finally {
+
+        roadsLoading =
+            false;
+
+    }
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| LULC PALETTE
+|--------------------------------------------------------------------------
+*/
+
+function updateLulcPalette() {
+
+    const selectedPalette =
+        document.getElementById(
+            "lulcPaletteSelect"
+        ).value;
+
+
+    const newUrl =
+        `${API_BASE}/api/raster/lulc-visual` +
+        `?palette=${encodeURIComponent(
+            selectedPalette
+        )}`;
+
+
+    if (
+        window.lulc2025Layer
+    ) {
+
+        window.lulc2025Layer.setUrl(
+            newUrl
+        );
+
+    }
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| SIMULATION
+|--------------------------------------------------------------------------
+*/
+
+async function runSimulation() {
+
+    const sizeInput =
+        document.getElementById(
+            "sim-size"
+        );
+
+
+    const coordsInput =
+        document.getElementById(
+            "sim-coords"
+        );
+
+
+    const size =
+        Number(
+            sizeInput.value
+        );
+
+
+    const coordParts =
+        coordsInput.value
+            .split(",")
+            .map(
+                value =>
+                    Number(
+                        value.trim()
+                    )
+            );
+
+
+    const lat =
+        coordParts[0];
+
+
+    const lon =
+        coordParts[1];
+
+
+    if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lon)
+    ) {
+
+        alert(
+            "Please enter valid coordinates as: latitude, longitude"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isFinite(size) ||
+        size <= 0
+    ) {
+
+        alert(
+            "Please enter a valid store floor area."
+        );
+
+        return;
+
+    }
+
+
+    const resultsBox =
+        document.getElementById(
+            "simulation-results"
+        );
+
+
+    resultsBox.classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "sim-res-pop"
+    ).innerText =
+        "Calculating catchment population...";
+
+
+    document.getElementById(
+        "sim-res-capture"
+    ).innerText =
+        "Calculating market capture...";
+
+
+    document.getElementById(
+        "sim-res-risk"
+    ).innerText =
+        "Calculating cannibalization...";
+
+
+    try {
+
+        const apiUrl =
+            `${API_BASE}/api/simulation` +
+            `?lat=${encodeURIComponent(lat)}` +
+            `&lon=${encodeURIComponent(lon)}` +
+            `&size_sqm=${encodeURIComponent(size)}` +
+            `&brand=${encodeURIComponent("Naivas")}`;
+
+
+        const response =
+            await fetch(
+                apiUrl
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Simulation API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.status ===
+                "warning"
+        ) {
+
+            document.getElementById(
+                "sim-res-pop"
+            ).innerText =
+                "Catchment Pop: Location outside study area.";
+
+
+            document.getElementById(
+                "sim-res-capture"
+            ).innerText =
+                "Market Capture: Not calculated.";
+
+
+            document.getElementById(
+                "sim-res-risk"
+            ).innerText =
+                "Cannibalization Risk: Not calculated.";
+
+
+            document.getElementById(
+                "report-content"
+            ).innerText =
+                data.message ||
+                "The proposed location is outside the study area.";
+
+
+            return;
+
+        }
+
+
+        if (
+            data.status !==
+                "success"
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Simulation failed."
+            );
+
+        }
+
+
+        const demand =
+            data.demand ||
+            {};
+
+
+        const cannibalization =
+            data.cannibalization ||
+            {};
+
+
+        const competition =
+            data.competition ||
+            {};
+
+
+        const catchment =
+            Number(
+                demand.estimated_catchment_population ||
+                0
+            );
+
+
+        const capture =
+            Number(
+                demand.market_capture_pct ||
+                0
+            );
+
+
+        const cannibalizationPct =
+            Number(
+                cannibalization
+                    .existing_brand_cannibalization_pct ||
+                0
+            );
+
+
+        document.getElementById(
+            "sim-res-pop"
+        ).innerText =
+            `Catchment Pop: ${
+                catchment.toLocaleString(
+                    undefined,
+                    {
+                        maximumFractionDigits: 0
+                    }
+                )
+            }`;
+
+
+        document.getElementById(
+            "sim-res-capture"
+        ).innerText =
+            `Market Capture: ${
+                capture.toFixed(2)
+            }%`;
+
+
+        document.getElementById(
+            "sim-res-risk"
+        ).innerText =
+            `Cannibalization Risk: ${
+                cannibalization.risk ||
+                "Unknown"
+            } (${
+                cannibalizationPct.toFixed(2)
+            }%)`;
+
+
+        document.getElementById(
+            "report-content"
+        ).innerText =
+
+            `Simulation results for ` +
+            `${lat.toFixed(5)}, ${lon.toFixed(5)}. ` +
+
+            `The proposed ${size.toLocaleString()} sqm ` +
+            `store has an estimated market capture of ` +
+
+            `${capture.toFixed(2)}%, representing approximately ` +
+
+            `${Number(
+                demand.captured_population ||
+                0
+            ).toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 0
+                }
+            )} customers. ` +
+
+            `The estimated catchment population is ` +
+
+            `${catchment.toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 0
+                }
+            )}. ` +
+
+            `Cannibalization of the selected brand ` +
+            `is estimated at ${cannibalizationPct.toFixed(2)}%, ` +
+
+            `classified as ${
+                cannibalization.risk ||
+                "Unknown"
+            }. ` +
+
+            `Nearest competitor: ${
+                competition.nearest_competitor ||
+                "Unknown"
+            } at approximately ` +
+
+            `${Number(
+                competition.nearest_competitor_distance_m ||
+                0
+            ).toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 0
+                }
+            )} m.`;
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Store simulation failed:",
+            error
+        );
+
+
+        document.getElementById(
+            "sim-res-pop"
+        ).innerText =
+            "Catchment Pop: Simulation failed.";
+
+
+        document.getElementById(
+            "sim-res-capture"
+        ).innerText =
+            "Market Capture: Simulation failed.";
+
+
+        document.getElementById(
+            "sim-res-risk"
+        ).innerText =
+            "Cannibalization Risk: Unable to calculate.";
+
+
+        document.getElementById(
+            "report-content"
+        ).innerText =
+            "The store simulation could not be completed. Check the API response and browser console.";
+
+    }
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD SUMMARY
+|--------------------------------------------------------------------------
+*/
+
+async function loadDashboardSummary() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}/api/summary`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Summary API returned HTTP ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data ||
+            data.status !==
+                "success"
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Invalid summary response."
+            );
+
+        }
+
+
+        document.getElementById(
+            "kpi-population"
+        ).innerText =
+            Number(
+                data.total_population ||
+                0
+            ).toLocaleString();
+
+
+        document.getElementById(
+            "kpi-retail"
+        ).innerText =
+            Number(
+                data.total_retail_outlets ||
+                0
+            ).toLocaleString();
+
+
+        document.getElementById(
+            "kpi-supermarkets"
+        ).innerText =
+            Number(
+                data.supermarkets ||
+                0
+            ).toLocaleString();
+
+
+        document.getElementById(
+            "kpi-transport"
+        ).innerText =
+            Number(
+                data.transport_stages ||
+                0
+            ).toLocaleString();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Candidates are deliberately updated by the real
+        | /api/candidates response.
+        |--------------------------------------------------------------------------
+        */
+
+
+        console.log(
+            "✅ Dashboard summary loaded successfully."
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "❌ Failed to load dashboard summary:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| START DASHBOARD
+|--------------------------------------------------------------------------
+*/
+
+loadForecastCharts();
+
+loadDashboardSummary();
+
+</script>
+
+
+</body>
+
+</html>
